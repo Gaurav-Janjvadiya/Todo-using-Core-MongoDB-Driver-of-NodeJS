@@ -1,0 +1,21 @@
+{
+  "name": "todo-app",
+  "repository": {
+    "url": "https://github.com/Gaurav-Janjvadiya/Todo-using-Core-MongoDB-Driver-of-NodeJS.git",
+    "type": "git"
+  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install-all": "concurrently \"npm i\" \"npm i --prefix client\" \"npm i --prefix server\"",
+    "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+    "start": "concurrently \"npm run dev --prefix client\" \"npm run start --prefix server\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
