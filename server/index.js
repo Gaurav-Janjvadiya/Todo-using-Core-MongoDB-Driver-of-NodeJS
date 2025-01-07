@@ -6,6 +6,10 @@ config();
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
 const MONGO_DB_URL = process.env.MONGO_DB_URL;
 const PORT = process.env.PORT || 8000;
 
@@ -23,10 +27,6 @@ async function connectDB() {
 }
 
 connectDB();
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 
 const db = client.db("basictodo");
 const collection = await db.createCollection("todos");
@@ -56,18 +56,6 @@ app.post("/api/todos", async (req, res) => {
   }
 });
 
-app.delete("/api/todos/:id", async (req, res) => {
-  try {
-    const deletedItem = await collection.deleteOne({
-      _id: new ObjectId(req.params.id),
-    });
-    console.log(deletedItem.deletedCount);
-    res.status(200).json({ message: "Deleted Sucessfully" });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
 app.put("/api/todos/:id", async (req, res) => {
   try {
     const todo = await collection.findOne({ _id: new ObjectId(req.params.id) });
@@ -77,10 +65,22 @@ app.put("/api/todos/:id", async (req, res) => {
       { _id: new ObjectId(req.params.id) },
       { $set: { todo: newTodo.todo } }
     );
-    if (!updatedTodo.modifiedCount) {
+    if (updatedTodo.modifiedCount <= 0) {
       return res.status(500).json({ message: "Something went wrong!" });
     }
     res.status(200).json({ message: "todo Updated!" });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.delete("/api/todos/:id", async (req, res) => {
+  try {
+    const deletedItem = await collection.deleteOne({
+      _id: new ObjectId(req.params.id),
+    });
+    console.log(deletedItem.deletedCount);
+    res.status(200).json({ message: "Deleted Sucessfully" });
   } catch (error) {
     console.log(error);
   }

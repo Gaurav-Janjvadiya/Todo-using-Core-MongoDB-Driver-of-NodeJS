@@ -20,7 +20,7 @@ const TodoItem = memo(({ todo }) => {
 
   const updateMutation = useMutation({
     mutationKey: ["upadateTodo"],
-    mutationFn: updateTodo,
+    mutationFn: (id, todoObj) => updateTodo(id, todoObj),
     onSuccess: () => {
       queryClient.invalidateQueries(["todos"]);
     },
@@ -29,11 +29,10 @@ const TodoItem = memo(({ todo }) => {
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      updateMutation.mutate(todo._id, formData);
-      console.log(formData);
+      updateMutation.mutate({ id: todo._id, todoObj: formData });
       handleCloseInput();
     },
-    [formData.todo]
+    [formData.todo, updateMutation.mutate, todo._id]
   );
 
   const deleteMutation = useMutation({
@@ -76,6 +75,7 @@ const TodoItem = memo(({ todo }) => {
             <button type="button" onClick={handleCloseInput}>
               Close
             </button>
+            <button type="submit">Update</button>
           </form>
         )}
       </li>

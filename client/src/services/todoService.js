@@ -19,9 +19,10 @@ export const createTodo = async (todoObj) => {
   }
 };
 
-export const updateTodo = async (id, todoObj) => {
+export const updateTodo = async ({ id, todoObj }) => {
   try {
     const { data } = await axiosInstance.put(`/api/todos/${id}`, todoObj);
+    console.log(todoObj);
     return data;
   } catch (error) {
     console.log("updateTodo Error", error);
