@@ -21,7 +21,7 @@ const App = () => {
     },
   });
   return (
-    <div>
+    <div className="flex items-center justify-center flex-col h-screen">
       <Input onSubmit={mutate} />
       {isLoading ? (
         <p>Loading...</p>

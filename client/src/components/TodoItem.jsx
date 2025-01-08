@@ -32,7 +32,7 @@ const TodoItem = memo(({ todo }) => {
       updateMutation.mutate({ id: todo._id, todoObj: formData });
       handleCloseInput();
     },
-    [formData.todo, updateMutation.mutate, todo._id]
+    [formData, updateMutation.mutate, todo._id]
   );
 
   const deleteMutation = useMutation({
@@ -52,33 +52,55 @@ const TodoItem = memo(({ todo }) => {
 
   return (
     <>
-      <li className="border space-x-3 h-full text-center">
-        <div>
-          <p>{todo.todo}</p>
+      <li className="flex bg-[#fefae0] p-2 items-center space-x-3 justify-center w-full border border-[#ccd5ae]">
+        <div className="mr-auto">
+          <p className="font-semibold text-xl">{todo.todo}</p>
         </div>
-        <div className="space-x-1">
-          <button className="border" onClick={handleDelete}>
+        <div className="space-x-2">
+          <button
+            className="border border-[#ccd5ae] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0]"
+            onClick={handleDelete}
+          >
             Delete
           </button>
-          <button className="border" onClick={handleUpdate}>
-            Update
-          </button>
+          {!inputActive.includes(todo._id) && (
+            <button
+              className="border border-[#ccd5ae] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0]"
+              onClick={handleUpdate}
+            >
+              Update
+            </button>
+          )}
         </div>
-        {inputActive.includes(todo._id) && (
-          <form onSubmit={handleSubmit}>
+      </li>
+      {inputActive.includes(todo._id) && (
+        <div className="border bg-[#d4a373] text-[#fefae0] w-1/2 p-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
             <input
+              className="text-[#d4a373] p-2 outline-none border border-[#fefae0] bg-[#fefae0]"
               type="text"
               name="todo"
               onChange={handleChange}
               value={formData.todo}
             />
-            <button type="button" onClick={handleCloseInput}>
-              Close
-            </button>
-            <button type="submit">Update</button>
+            <div className="flex gap-2">
+              <button
+                className="border border-[#fefae0] hover:bg-[#fefae0] hover:text-[#d4a373] active:bg-[#d4a373] active:text-[#fefae0] px-2 py-1"
+                type="submit"
+              >
+                Update
+              </button>
+              <button
+                className="border border-[#fefae0] hover:bg-[#fefae0] hover:text-[#d4a373] active:bg-[#d4a373] active:text-[#fefae0] px-2 py-1"
+                type="button"
+                onClick={handleCloseInput}
+              >
+                Close
+              </button>
+            </div>
           </form>
-        )}
-      </li>
+        </div>
+      )}
     </>
   );
 });
