@@ -3,7 +3,6 @@ import axiosInstance from "../api/axiosInstance";
 export const fetchTodos = async () => {
   try {
     const { data } = await axiosInstance.get("/api/todos");
-    console.log(data);
     return data;
   } catch (error) {
     console.log("fetchTodos Error", error);
@@ -22,7 +21,6 @@ export const createTodo = async (todoObj) => {
 export const updateTodo = async ({ id, todoObj }) => {
   try {
     const { data } = await axiosInstance.put(`/api/todos/${id}`, todoObj);
-    console.log(todoObj);
     return data;
   } catch (error) {
     console.log("updateTodo Error", error);
