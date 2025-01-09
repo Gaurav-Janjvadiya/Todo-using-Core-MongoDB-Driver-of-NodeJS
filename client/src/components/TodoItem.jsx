@@ -52,11 +52,11 @@ const TodoItem = memo(({ todo }) => {
 
   return (
     <>
-      <li className="flex bg-[#fefae0] p-2 items-center space-x-3 justify-center w-full border border-[#ccd5ae]">
+      <li className="flex bg-[#fefae0] p-2 items-center space-x-3 justify-center w-full  border border-[#ccd5ae]">
         <div className="mr-auto">
-          <p className="font-semibold text-xl">{todo.todo}</p>
+          <p className="font-semibold text-lg text-balance">{todo.todo}</p>
         </div>
-        <div className="space-x-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <button
             className="border border-[#ccd5ae] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0]"
             onClick={handleDelete}
@@ -74,7 +74,7 @@ const TodoItem = memo(({ todo }) => {
         </div>
       </li>
       {inputActive.includes(todo._id) && (
-        <div className="border bg-[#d4a373] text-[#fefae0] w-1/2 p-4">
+        <div className="border w-full bg-[#d4a373] text-[#fefae0] p-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-2">
             <input
               className="text-[#d4a373] p-2 outline-none border border-[#fefae0] bg-[#fefae0]"

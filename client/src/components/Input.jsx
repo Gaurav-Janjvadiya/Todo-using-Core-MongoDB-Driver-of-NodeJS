@@ -15,22 +15,23 @@ function Input({ onSubmit }) {
     },
     [formData.todo]
   );
+
   return (
     <>
       <form
-        className="flex items-center space-x-2 w-fit p-4 justify-center"
+        className="flex items-center space-x-3 w-full p-6 justify-center"
         onSubmit={handleSubmit}
       >
         <input
-          className="border border-[#ccd5ae] outline-none py-1 px-2 bg-[#fefae0]"
+          className="border border-[#ccd5ae] outline-none py-2 px-4 text-lg bg-[#fefae0]"
           required
           type="text"
           name="todo"
           onChange={handleChange}
           value={formData.todo}
-          placeholder="type something..."
+          placeholder="Type something..."
         />
-        <button className="border border-[#ccd5ae] bg-[#fefae0] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0]">
+        <button className="border border-[#ccd5ae] bg-[#fefae0] py-2 px-4 text-lg hover:bg-[#e9edc9] active:bg-[#fefae0]">
           Add
         </button>
       </form>
