@@ -11,8 +11,7 @@ export const fetchTodos = async () => {
 
 export const createTodo = async (todoObj) => {
   try {
-    const { data } = await axiosInstance.post("/api/todos", todoObj);
-    return data;
+    return (await axiosInstance.post("/api/todos", todoObj)).data;
   } catch (error) {
     console.log("createTodo Error", error);
   }
@@ -20,8 +19,7 @@ export const createTodo = async (todoObj) => {
 
 export const updateTodo = async ({ id, todoObj }) => {
   try {
-    const { data } = await axiosInstance.put(`/api/todos/${id}`, todoObj);
-    return data;
+    return (await axiosInstance.put(`/api/todos/${id}`, todoObj)).data;
   } catch (error) {
     console.log("updateTodo Error", error);
   }
@@ -29,8 +27,7 @@ export const updateTodo = async ({ id, todoObj }) => {
 
 export const deleteTodo = async (id) => {
   try {
-    const { data } = await axiosInstance.delete(`/api/todos/${id}`);
-    return data;
+    return (await axiosInstance.delete(`/api/todos/${id}`)).data;
   } catch (error) {
     console.log("deleteTodo Error", error);
   }

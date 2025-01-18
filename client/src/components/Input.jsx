@@ -23,7 +23,7 @@ function Input({ onSubmit }) {
         onSubmit={handleSubmit}
       >
         <input
-          className="border border-[#ccd5ae] outline-none py-2 px-4 text-lg bg-[#fefae0]"
+          className="border-2 border-[#ccd5ae] outline-none py-2 px-4 text-lg bg-[#fefae0]"
           required
           type="text"
           name="todo"
@@ -31,7 +31,7 @@ function Input({ onSubmit }) {
           value={formData.todo}
           placeholder="Type something..."
         />
-        <button className="border border-[#ccd5ae] bg-[#fefae0] py-2 px-4 text-lg hover:bg-[#e9edc9] active:bg-[#fefae0]">
+        <button className="border-2 border-[#ccd5ae] bg-[#fefae0] py-2 px-4 text-lg hover:bg-[#e9edc9] active:bg-[#fefae0]">
           Add
         </button>
       </form>

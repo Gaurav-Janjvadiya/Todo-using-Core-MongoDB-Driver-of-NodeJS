@@ -52,20 +52,20 @@ const TodoItem = memo(({ todo }) => {
 
   return (
     <>
-      <li className="flex bg-[#fefae0] p-2 items-center space-x-3 justify-center w-full  border border-[#ccd5ae]">
+      <li className="group flex bg-[#fefae0] p-2 items-center space-x-3 justify-center w-full border-2 border-[#ccd5ae]">
         <div className="mr-auto">
           <p className="font-semibold text-lg text-balance">{todo.todo}</p>
         </div>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <div className="grid group-hover:opacity-100 opacity-0 grid-cols-1 gap-2 sm:grid-cols-2">
           <button
-            className="border border-[#ccd5ae] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0]"
+            className="border-2 border-[#ccd5ae] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0]"
             onClick={handleDelete}
           >
             Delete
           </button>
           {!inputActive.includes(todo._id) && (
             <button
-              className="border border-[#ccd5ae] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0]"
+              className="border-2 border-[#ccd5ae] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0]"
               onClick={handleUpdate}
             >
               Update
@@ -74,10 +74,10 @@ const TodoItem = memo(({ todo }) => {
         </div>
       </li>
       {inputActive.includes(todo._id) && (
-        <div className="border w-full bg-[#d4a373] text-[#fefae0] p-4">
+        <div className="border-2 w-full bg-[#d4a373] text-[#fefae0] p-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-2">
             <input
-              className="text-[#d4a373] p-2 outline-none border border-[#fefae0] bg-[#fefae0]"
+              className="text-[#d4a373] p-2 outline-none border-2 border-[#fefae0] bg-[#fefae0]"
               type="text"
               name="todo"
               onChange={handleChange}
@@ -85,13 +85,13 @@ const TodoItem = memo(({ todo }) => {
             />
             <div className="flex gap-2">
               <button
-                className="border border-[#fefae0] hover:bg-[#fefae0] hover:text-[#d4a373] active:bg-[#d4a373] active:text-[#fefae0] px-2 py-1"
+                className="border-2 border-[#fefae0] hover:bg-[#fefae0] hover:text-[#d4a373] active:bg-[#d4a373] active:text-[#fefae0] px-2 py-1"
                 type="submit"
               >
                 Update
               </button>
               <button
-                className="border border-[#fefae0] hover:bg-[#fefae0] hover:text-[#d4a373] active:bg-[#d4a373] active:text-[#fefae0] px-2 py-1"
+                className="border-2 border-[#fefae0] hover:bg-[#fefae0] hover:text-[#d4a373] active:bg-[#d4a373] active:text-[#fefae0] px-2 py-1"
                 type="button"
                 onClick={handleCloseInput}
               >

@@ -2,6 +2,10 @@ import express from "express";
 import { config } from "dotenv";
 import { MongoClient, ObjectId } from "mongodb";
 import cors from "cors";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { signInUser, SignUpUser } from "./validators/userValidator.js";
+import validateMiddleware from "./middlewares/validateMiddleware.js";
 config();
 
 const app = express();
@@ -29,7 +33,8 @@ async function connectDB() {
 connectDB();
 
 const db = client.db("basictodo");
-const collection = await db.createCollection("todos");
+const collection = db.collection("todos");
+const userCollection = db.collection("users");
 
 app.get("/api/todos", async (req, res) => {
   try {
@@ -85,6 +90,58 @@ app.delete("/api/todos/:id", async (req, res) => {
     console.log(error);
   }
 });
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+app.post(
+  "/api/user/signup",
+  (req, res) => validateMiddleware(SignUpUser, req.body),
+  async (req, res) => {
+    try {
+      const { username, email, password } = req.body;
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+      const user = await userCollection.insertOne({
+        username,
+        email,
+        password: hash,
+      });
+      const token = jwt.sign({ _id: user.insertedId }, JWT_SECRET, {
+        expiresIn: "24h",
+      });
+      res.status(200).json({ jwt: token });
+    } catch (error) {
+      console.log(error);
+      res.send();
+    }
+  }
+);
+
+app.post("/api/user/signin", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await userCollection.findOne({ username: username });
+    const isPass = await bcrypt.compare(password, user.password);
+    if (!isPass) {
+      res.status(401).json({ message: "please enter correct password" });
+    }
+    const token = jwt.sign({ _id: user.insertedId }, JWT_SECRET, {
+      expiresIn: "24h",
+    });
+    res.status(200).json({ jwt: token });
+  } catch (error) {
+    console.log("Error ", error);
+    res.send("");
+  }
+});
+
+// app.post("/api/user/signout",(req,res) => {
+//   try {
+
+//   } catch (error) {
+
+//   }
+// })
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
