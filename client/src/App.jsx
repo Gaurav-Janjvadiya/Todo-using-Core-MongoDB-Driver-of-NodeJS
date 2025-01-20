@@ -10,7 +10,7 @@ import SignIn from "./pages/signin/SignIn";
 import UserContextProvider from "./context/userContext.jsx";
 
 const App = () => {
-  const { data: todos = [], isLoading } = useQuery({
+  const { data: data = [], isLoading } = useQuery({
     queryKey: ["todos"],
     queryFn: fetchTodos,
     gcTime: 5 * 60 * 1000,
@@ -39,7 +39,7 @@ const App = () => {
                   <p>Loading...</p>
                 ) : (
                   <>
-                    <TodoList todos={todos} />
+                    <TodoList todos={data.todos} />
                   </>
                 )}
               </div>

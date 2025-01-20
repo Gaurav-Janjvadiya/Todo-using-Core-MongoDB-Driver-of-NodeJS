@@ -38,6 +38,7 @@ connectDB();
 const db = client.db("basictodo");
 const collection = db.collection("todos");
 const userCollection = db.collection("users");
+// const
 
 app.get("/api/todos", async (req, res) => {
   try {
@@ -104,7 +105,14 @@ app.delete("/api/todos/:id", async (req, res) => {
   }
 });
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_TOKEN_SECRET;
+const JWT_REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_TOKEN_SECRET;
+
+const generateToken = () => {
+  return jwt.sign({ _id: user.insertedId }, JWT_ACCESS_TOKEN_SECRET, {
+    expiresIn: "15m",
+  });
+};
 
 app.post(
   "/api/user/signup",
@@ -122,10 +130,13 @@ app.post(
         email,
         password: hash,
       });
-      const token = jwt.sign({ _id: user.insertedId }, JWT_SECRET, {
-        expiresIn: "24h",
-      });
-      res.status(201).json({ jwt: token });
+      const accessToken = generateToken();
+      const refreshToken = jwt.sign(
+        { _id: user.insertedId },
+        JWT_REFRESH_TOKEN_SECRET,
+        { expiresIn: "7d" }
+      );
+      res.status(201).json({ accessToken, refreshToken });
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Internal server error" });
@@ -146,9 +157,7 @@ app.post(
           .status(401)
           .json({ message: "please enter correct password" });
       }
-      const token = jwt.sign({ _id: user.insertedId }, JWT_SECRET, {
-        expiresIn: "24h",
-      });
+      const token = generateToken();
       res.status(200).json({ jwt: token });
     } catch (error) {
       console.log("Error ", error);

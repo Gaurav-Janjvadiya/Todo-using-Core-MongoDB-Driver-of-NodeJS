@@ -9,17 +9,16 @@ const SignIn = () => {
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  const signInMutation = useMutation({
+  const { mutate } = useMutation({
     mutationKey: ["signUser"],
     mutationFn: signIn,
-    onSuccess: () => {
-      console.log("Singed In");
+    onSuccess: (token) => {
+      login(token);
     },
   });
   const handleSubmit = (e) => {
     e.preventDefault();
-    signInMutation.mutate(formData);
-    login(signInMutation.data);
+    mutate(formData);
     setFormData({ username: "", password: "" });
   };
   return (
@@ -29,14 +28,18 @@ const SignIn = () => {
         onSubmit={handleSubmit}
       >
         <input
+          required
           className="border-2 border-[#ccd5ae] outline-none py-2 px-2 w-full text-lg bg-[#fefae0]"
           onChange={handleChange}
+          placeholder="Username"
           value={formData.username}
           type="text"
           name="username"
           id="username"
         />
         <input
+          required
+          placeholder="Password"
           className="border-2 border-[#ccd5ae] outline-none py-2 px-2 w-full text-lg bg-[#fefae0]"
           onChange={handleChange}
           value={formData.password}

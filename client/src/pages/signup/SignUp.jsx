@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { signUp } from "../../services/userService";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useUserContext } from "../../context/userContext";
 
 const SignUp = () => {
+  const { login } = useUserContext();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -11,13 +13,16 @@ const SignUp = () => {
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  const signUpMutatio = useMutation({
+  const { mutate } = useMutation({
     mutationKey: ["signUpUser"],
     mutationFn: signUp,
+    onSuccess: (token) => {
+      login(token);
+    },
   });
   const handleSubmit = (e) => {
     e.preventDefault();
-    signUpMutatio.mutate(formData);
+    mutate(formData);
     setFormData({
       username: "",
       email: "",
@@ -31,26 +36,32 @@ const SignUp = () => {
         onSubmit={handleSubmit}
       >
         <input
+          required
           className="border-2 border-[#ccd5ae] outline-none py-2 px-2 w-full text-lg bg-[#fefae0]"
           onChange={handleChange}
           value={formData.username}
+          placeholder="Username"
           type="text"
           name="username"
           id="username"
         />
         <input
+          required
           className="border-2 border-[#ccd5ae] outline-none py-2 px-2 w-full text-lg bg-[#fefae0]"
           onChange={handleChange}
           value={formData.email}
           type="email"
+          placeholder="Email"
           name="email"
           id="email"
         />
         <input
+          required
           className="border-2 border-[#ccd5ae] outline-none py-2 px-2 w-full text-lg bg-[#fefae0]"
           onChange={handleChange}
           value={formData.password}
           type="password"
+          placeholder="Password"
           name="password"
           id="password"
         />
