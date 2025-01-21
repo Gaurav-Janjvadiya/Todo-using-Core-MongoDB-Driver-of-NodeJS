@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Input from "./components/Input";
 import TodoList from "./components/TodoList";
 import { fetchTodos, createTodo } from "./services/todoService";
@@ -10,12 +11,15 @@ import SignIn from "./pages/signin/SignIn";
 import UserContextProvider from "./context/userContext.jsx";
 
 const App = () => {
-  const { data: data = [], isLoading } = useQuery({
+  const [todos, setTodos] = useState([]);
+
+  const { data = { todos: [] }, isLoading } = useQuery({
     queryKey: ["todos"],
     queryFn: fetchTodos,
     gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
+
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
@@ -25,8 +29,25 @@ const App = () => {
       queryClient.invalidateQueries(["todos"]);
     },
   });
+
+  useEffect(() => {
+    if (data?.todos) {
+      localStorage.setItem("todos", JSON.stringify(data.todos));
+      setTodos(data.todos);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    const storedTodos = JSON.parse(localStorage.getItem("todos") || "[]");
+    if (storedTodos.length) {
+      setTodos(storedTodos);
+    }
+  }, []);
+
+  console.log("todos -> ", todos);
+
   return (
-    <UserContextProvider >
+    <UserContextProvider>
       <BrowserRouter>
         <Header />
         <Routes>
@@ -39,7 +60,7 @@ const App = () => {
                   <p>Loading...</p>
                 ) : (
                   <>
-                    <TodoList todos={data.todos} />
+                    <TodoList todos={todos} />
                   </>
                 )}
               </div>

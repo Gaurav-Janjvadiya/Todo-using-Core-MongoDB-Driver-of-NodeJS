@@ -1,8 +1,12 @@
 import axiosInstance from "../api/axiosInstance";
+import Cookies from "js-cookie";
 
 export const fetchTodos = async () => {
   try {
-    const { data } = await axiosInstance.get("/api/todos");
+    const token = Cookies.get("jwt");
+    const { data } = await axiosInstance.get("/api/todos", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return data;
   } catch (error) {
     console.log("fetchTodos Error", error);

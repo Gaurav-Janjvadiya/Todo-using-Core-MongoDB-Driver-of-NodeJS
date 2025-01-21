@@ -38,7 +38,6 @@ connectDB();
 const db = client.db("basictodo");
 const collection = db.collection("todos");
 const userCollection = db.collection("users");
-// const
 
 app.get("/api/todos", async (req, res) => {
   try {
@@ -155,7 +154,7 @@ app.post(
       if (!isPass) {
         return res
           .status(401)
-          .json({ message: "please enter correct password" });
+          .json({ message: "Please enter correct password" });
       }
       const token = generateToken();
       res.status(200).json({ jwt: token });
