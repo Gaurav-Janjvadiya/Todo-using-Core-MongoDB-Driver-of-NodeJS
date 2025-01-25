@@ -16,9 +16,11 @@ export const signIn = async (credintials) => {
   }
 };
 
+// export const getRefreshToken = async () => {}
+
 export const signOut = async () => {
   try {
-    return (await axiosInstance.post("/api/user/signout")).data;
+    return (await axiosInstance.delete("/api/refreshToken")).data;
   } catch (error) {
     console.log(error);
   }

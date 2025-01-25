@@ -38,6 +38,7 @@ connectDB();
 const db = client.db("basictodo");
 const collection = db.collection("todos");
 const userCollection = db.collection("users");
+const userTokenCollection = db.collection("tokens");
 
 app.get("/api/todos", async (req, res) => {
   try {
@@ -104,14 +105,8 @@ app.delete("/api/todos/:id", async (req, res) => {
   }
 });
 
-const JWT_ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_TOKEN_SECRET;
-const JWT_REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_TOKEN_SECRET;
-
-const generateToken = () => {
-  return jwt.sign({ _id: user.insertedId }, JWT_ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m",
-  });
-};
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 app.post(
   "/api/user/signup",
@@ -124,18 +119,12 @@ app.post(
         return res.status(409).json({ message: "User already exists" });
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);
-      const user = await userCollection.insertOne({
+      await userCollection.insertOne({
         username,
         email,
         password: hash,
       });
-      const accessToken = generateToken();
-      const refreshToken = jwt.sign(
-        { _id: user.insertedId },
-        JWT_REFRESH_TOKEN_SECRET,
-        { expiresIn: "7d" }
-      );
-      res.status(201).json({ accessToken, refreshToken });
+      res.status(201).json({ message: "User sign up is successfully done" });
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Internal server error" });
@@ -150,14 +139,36 @@ app.post(
     try {
       const { username, password } = req.body;
       const user = await userCollection.findOne({ username: username });
-      const isPass = user && (await bcrypt.compare(password, user.password));
-      if (!isPass) {
+      const isPassCorrect =
+        user && (await bcrypt.compare(password, user.password));
+      if (!isPassCorrect) {
         return res
           .status(401)
           .json({ message: "Please enter correct password" });
       }
-      const token = generateToken();
-      res.status(200).json({ jwt: token });
+      const accessToken = jwt.sign(
+        { _id: user.insertedId },
+        ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
+      const refreshToken = jwt.sign(
+        { _id: user.insertedId },
+        ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "7d",
+        }
+      );
+      await userTokenCollection.insertOne({
+        userId: user._id,
+        token: refreshToken,
+        createdAt: Date.now(),
+        expires: 7 * 86400,
+      });
+      res
+        .status(200)
+        .json({ accessToken, refreshToken, message: "Logged In Succesfully!" });
     } catch (error) {
       console.log("Error ", error);
       res.status(500).json({ message: "something went wrong" });
@@ -165,13 +176,25 @@ app.post(
   }
 );
 
-// app.post("/api/user/signout",(req,res) => {
-//   try {
-
-//   } catch (error) {
-
-//   }
-// })
+app
+  .route("/refreshToken")
+  .post(async (req, res) => {
+    const decoded = jwt.verify(req.body, REFRESH_TOKEN_SECRET);
+    const { userId } = await userTokenCollection.findOne({ token: req.body });
+    if (!decoded._id === userId) return res.send("Error in refresh token");
+    const refreshToken = jwt.sign(
+      { _id: user.insertedId },
+      ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+    res.json({ refreshToken });
+  })
+  .delete(async (req, res) => {
+    await userTokenCollection.deleteOne({ token: req.body });
+    res.send("done");
+  });
 
 app.listen(PORT, () => {
   console.log(`Server is running on PORT ${PORT}`);
