@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { signUp } from "../../services/userService";
 import { useMutation } from "@tanstack/react-query";
-import { useUserContext } from "../../context/userContext";
 
 const SignUp = () => {
-  const { login } = useUserContext();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -16,8 +14,8 @@ const SignUp = () => {
   const { mutate } = useMutation({
     mutationKey: ["signUpUser"],
     mutationFn: signUp,
-    onSuccess: (token) => {
-      login(token);
+    onSuccess: (data) => {
+      console.log(data);
     },
   });
   const handleSubmit = (e) => {

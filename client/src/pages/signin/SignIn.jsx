@@ -12,8 +12,9 @@ const SignIn = () => {
   const { mutate } = useMutation({
     mutationKey: ["signUser"],
     mutationFn: signIn,
-    onSuccess: (token) => {
-      login(token);
+    onSuccess: (data) => {
+      login(data);
+      console.log(user);
     },
   });
   const handleSubmit = (e) => {

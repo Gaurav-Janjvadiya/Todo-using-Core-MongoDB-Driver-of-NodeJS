@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
 import { useUserContext } from "../context/userContext";
+import { useMutation } from "@tanstack/react-query";
+import { signOut } from "../services/userService";
 
 const Header = () => {
-  const { user } = useUserContext();
+  const { user, logout } = useUserContext();
+  const { mutate } = useMutation({
+    mutationKey: ["signout"],
+    mutationFn: signOut,
+    onSuccess: () => {
+      logout();
+    },
+  });
   return (
     <div className="w-full flex h-fit py-4 px-16 border-b border-b-[#d4a373]">
       <h1 className="mr-auto font-extrabold text-4xl">
@@ -11,12 +20,13 @@ const Header = () => {
       <ul className="flex justify-end items-center space-x-2">
         {user.isUser ? (
           <li>
-            <Link
+            <button
               className="bg-[#fefae0] border-2 border-[#ccd5ae] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0] "
-              to={"/signout"}
+              // to={"/signout"}
+              onClick={() => mutate(user.refreshToken)}
             >
               Sign Out
-            </Link>
+            </button>
           </li>
         ) : (
           <>

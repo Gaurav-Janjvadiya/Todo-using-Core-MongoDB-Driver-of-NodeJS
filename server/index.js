@@ -177,7 +177,7 @@ app.post(
 );
 
 app
-  .route("/refreshToken")
+  .route("/api/refreshToken")
   .post(async (req, res) => {
     const decoded = jwt.verify(req.body, REFRESH_TOKEN_SECRET);
     const { userId } = await userTokenCollection.findOne({ token: req.body });
