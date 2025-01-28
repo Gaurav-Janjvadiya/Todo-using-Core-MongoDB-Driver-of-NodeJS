@@ -8,13 +8,20 @@ import morgan from "morgan";
 import { signInUser, signUpUser } from "./validators/userValidator.js";
 import { todo } from "./validators/todoValidator.js";
 import validateMiddleware from "./middlewares/validateMiddleware.js";
+import cookieParser from "cookie-parser";
 config();
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 app.use(morgan("dev"));
 
 const MONGO_DB_URL = process.env.MONGO_DB_URL;
@@ -166,6 +173,13 @@ app.post(
         createdAt: Date.now(),
         expires: 7 * 86400,
       });
+      res.cookie("jwt", accessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+        path: "/",
+        maxAge: 15 * 60 * 1000,
+      });
       res
         .status(200)
         .json({ accessToken, refreshToken, message: "Logged In Succesfully!" });
@@ -193,7 +207,8 @@ app
   })
   .delete(async (req, res) => {
     await userTokenCollection.deleteOne({ token: req.body });
-    res.send("done");
+    res.clearCookie("jwt", { httpOnly: true });
+    res.status(200).json({ message: "Logged out successfully" });
   });
 
 app.listen(PORT, () => {

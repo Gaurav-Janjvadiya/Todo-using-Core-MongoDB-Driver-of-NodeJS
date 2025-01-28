@@ -22,7 +22,6 @@ const Header = () => {
           <li>
             <button
               className="bg-[#fefae0] border-2 border-[#ccd5ae] py-1 px-3 hover:bg-[#e9edc9] active:bg-[#fefae0] "
-              // to={"/signout"}
               onClick={() => mutate(user.refreshToken)}
             >
               Sign Out

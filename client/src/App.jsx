@@ -11,10 +11,7 @@ import SignIn from "./pages/signin/SignIn";
 import UserContextProvider from "./context/userContext.jsx";
 
 const App = () => {
-  const [todos, setTodos] = useState([]);
-
-  // const { data: todos = [], isLoading } = useQuery({
-    const { data = { todos: [] }, isLoading } = useQuery({
+  const { data: todos = [], isLoading } = useQuery({
     queryKey: ["todos"],
     queryFn: fetchTodos,
     gcTime: 5 * 60 * 1000,
@@ -30,23 +27,6 @@ const App = () => {
       queryClient.invalidateQueries(["todos"]);
     },
   });
-
-  // useEffect(() => {
-  //   if (data?.todos) {
-  //     localStorage.setItem("todos", JSON.stringify(data.todos));
-  //     setTodos(data.todos);
-  //   }
-  // }, [data]);
-
-  // useEffect(() => {
-  //   const storedTodos = JSON.parse(localStorage.getItem("todos") || "[]");
-  //   if (storedTodos.length) {
-  //     setTodos(storedTodos);
-  //   }
-  // }, []);
-
-  // console.log("todos -> ", todos);
-
   return (
     <UserContextProvider>
       <BrowserRouter>
@@ -61,7 +41,7 @@ const App = () => {
                   <p>Loading...</p>
                 ) : (
                   <>
-                    <TodoList todos={todos} />
+                    <TodoList todos={(todos)} />
                   </>
                 )}
               </div>

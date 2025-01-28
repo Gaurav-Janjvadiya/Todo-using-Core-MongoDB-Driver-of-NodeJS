@@ -22,14 +22,14 @@ const UserContextProvider = ({ children }) => {
 
   const login = (data) => {
     setUser({ isUser: true, refreshToken: data.refreshToken });
-    Cookies.set("jwt", data.accessToken, { httpOnly: true });
+    // Cookies.set("jwt", data.accessToken, { expires: 15 / (24 * 60) });
   };
 
   const logout = () => {
     setUser({ isUser: false, refreshToken: "" });
-    Cookies.remove("jwt", token.jwt);
+    // Cookies.remove("jwt");
   };
-  
+
   return (
     <userContext.Provider value={{ user, login, logout }}>
       {children}
